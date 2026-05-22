@@ -1,3 +1,5 @@
+import java.util.Properties
+
 plugins {
     alias(libs.plugins.android.application)
     alias(libs.plugins.kotlin.android)
@@ -5,6 +7,24 @@ plugins {
     alias(libs.plugins.ksp)
     alias(libs.plugins.hilt)
     alias(libs.plugins.google.gms.google.services)
+}
+
+val apiBaseUrl: String = run {
+    val localProperties = Properties()
+    val localPropertiesFile = rootProject.file("local.properties")
+    if (localPropertiesFile.exists()) {
+        localPropertiesFile.inputStream().use { localProperties.load(it) }
+    }
+
+    val raw = (
+        localProperties.getProperty("API_BASE_URL")
+            ?: localProperties.getProperty("api.base.url")
+            ?: (project.findProperty("API_BASE_URL") as? String)
+            ?: System.getenv("API_BASE_URL")
+            ?: "https://your-api-base-url.com/"
+        ).trim()
+
+    if (raw.endsWith("/")) raw else "$raw/"
 }
 
 android {
@@ -17,6 +37,8 @@ android {
         targetSdk = 36
         versionCode = 1
         versionName = "1.0"
+
+        buildConfigField("String", "API_BASE_URL", "\"$apiBaseUrl\"")
 
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
     }
@@ -39,6 +61,7 @@ android {
     }
     buildFeatures {
         compose = true
+        buildConfig = true
     }
 }
 

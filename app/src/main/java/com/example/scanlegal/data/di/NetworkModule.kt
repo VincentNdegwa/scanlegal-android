@@ -1,5 +1,6 @@
 package com.example.scanlegal.data.di
 
+import com.example.scanlegal.BuildConfig
 import com.example.scanlegal.data.local.preferences.DataStoreManager
 import com.example.scanlegal.data.remote.api.ApiService
 import com.example.scanlegal.data.remote.interceptor.JwtAuthInterceptor
@@ -21,7 +22,6 @@ import javax.inject.Singleton
 @InstallIn(SingletonComponent::class)
 object NetworkModule {
     
-    private const val BASE_URL = "https://your-api-base-url.com/" // TODO: Replace with actual API URL
     private const val DB_PASSPHRASE = "your-secure-passphrase" // TODO: Replace with secure passphrase
     
     @Provides
@@ -48,7 +48,7 @@ object NetworkModule {
     @Singleton
     fun provideRetrofit(okHttpClient: OkHttpClient, moshi: Moshi): Retrofit {
         return Retrofit.Builder()
-            .baseUrl(BASE_URL)
+            .baseUrl(BuildConfig.API_BASE_URL)
             .client(okHttpClient)
             .addConverterFactory(MoshiConverterFactory.create(moshi))
             .build()

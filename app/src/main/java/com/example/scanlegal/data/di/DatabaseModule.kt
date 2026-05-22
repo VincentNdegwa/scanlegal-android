@@ -7,6 +7,7 @@ import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
 import dagger.hilt.android.qualifiers.ApplicationContext
+import dagger.hilt.components.SingletonComponent
 import net.sqlcipher.database.SupportFactory
 import javax.inject.Singleton
 
@@ -30,5 +31,11 @@ object DatabaseModule {
             .openHelperFactory(supportFactory)
             .fallbackToDestructiveMigration()
             .build()
+    }
+
+    @Provides
+    @Singleton
+    fun provideDocumentDao(appDatabase: AppDatabase): com.example.scanlegal.data.local.database.dao.DocumentDao {
+        return appDatabase.documentDao()
     }
 }

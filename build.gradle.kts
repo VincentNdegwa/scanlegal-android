@@ -5,3 +5,10 @@ plugins {
     alias(libs.plugins.kotlin.compose) apply false
     alias(libs.plugins.google.gms.google.services) apply false
 }
+
+buildscript {
+    dependencies {
+        classpath("com.squareup:javapoet:1.13.0")
+    }
+    configurations["classpath"].resolutionStrategy.force("com.squareup:javapoet:1.13.0")
+}

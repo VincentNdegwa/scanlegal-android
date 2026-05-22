@@ -10,13 +10,13 @@ import kotlinx.coroutines.flow.Flow
 @Dao
 interface CreditsLedgerDao {
     
-    @Query("SELECT * FROM credits_ledger WHERE userId = :userId ORDER BY createdAt DESC")
+    @Query("SELECT * FROM credits_ledger WHERE user_id = :userId ORDER BY created_at DESC")
     fun getTransactionsByUserId(userId: String): Flow<List<CreditsLedgerEntity>>
     
-    @Query("SELECT SUM(amountChanged) FROM credits_ledger WHERE userId = :userId")
+    @Query("SELECT SUM(amount_changed) FROM credits_ledger WHERE user_id = :userId")
     suspend fun getBalance(userId: String): Int?
     
-    @Query("SELECT SUM(amountChanged) FROM credits_ledger WHERE userId = :userId AND transaction_type = 'CONSUMPTION' AND createdAt >= :startDate")
+    @Query("SELECT SUM(amount_changed) FROM credits_ledger WHERE user_id = :userId AND transaction_type = 'CONSUMPTION' AND created_at >= :startDate")
     suspend fun getConsumptionThisMonth(userId: String, startDate: String): Int?
     
     @Insert(onConflict = OnConflictStrategy.REPLACE)
@@ -28,6 +28,6 @@ interface CreditsLedgerDao {
     @Query("DELETE FROM credits_ledger WHERE id = :id")
     suspend fun deleteTransaction(id: Long)
     
-    @Query("DELETE FROM credits_ledger WHERE userId = :userId")
+    @Query("DELETE FROM credits_ledger WHERE user_id = :userId")
     suspend fun deleteTransactionsByUserId(userId: String)
 }

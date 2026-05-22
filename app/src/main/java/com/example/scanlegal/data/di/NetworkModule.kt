@@ -2,8 +2,8 @@ package com.example.scanlegal.data.di
 
 import com.example.scanlegal.data.local.preferences.DataStoreManager
 import com.example.scanlegal.data.remote.api.ApiService
-import com.example.scanlegal.data.remote.api.MoshiFactory
 import com.example.scanlegal.data.remote.interceptor.JwtAuthInterceptor
+import com.squareup.moshi.Moshi
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
@@ -27,11 +27,7 @@ object NetworkModule {
     @Provides
     @Singleton
     fun provideJwtAuthInterceptor(dataStoreManager: DataStoreManager): JwtAuthInterceptor {
-        return JwtAuthInterceptor {
-            // Get Firebase token from DataStore
-            // This will be implemented when Firebase is integrated
-            null
-        }
+        return JwtAuthInterceptor(dataStoreManager)
     }
     
     @Provides
@@ -50,11 +46,11 @@ object NetworkModule {
     
     @Provides
     @Singleton
-    fun provideRetrofit(okHttpClient: OkHttpClient, moshiFactory: MoshiFactory): Retrofit {
+    fun provideRetrofit(okHttpClient: OkHttpClient, moshi: Moshi): Retrofit {
         return Retrofit.Builder()
             .baseUrl(BASE_URL)
             .client(okHttpClient)
-            .addConverterFactory(MoshiConverterFactory.create(moshiFactory.provideMoshi()))
+            .addConverterFactory(MoshiConverterFactory.create(moshi))
             .build()
     }
     
